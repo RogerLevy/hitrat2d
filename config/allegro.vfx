@@ -1,0 +1,3 @@
+cwd vfxland3
+include lib/al/allegro-5.2.5.vfx
+cwd ..

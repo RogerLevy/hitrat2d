@@ -1,0 +1,122 @@
++sin  \ enable tokenization of all definitions from here
+
+require config/options.vfx
+require config/allegro.vfx
+
+cwd vfxland3
+require lib/vl3/vfxland3.vfx
+require lib/csv.vfx
+require plugins/engine1.vfx
+require plugins/bitmaps2.vfx
+require plugins/tilemap4.vfx
+require lib/files1.vfx
+cwd %idir%
+
+include lib/str.vfx
+require lib/array.vfx
+
+-sin  \ disable tokenization of all definitions from here
+
+\ ------------------------------------------------------------------------------
+
+: read-csv,  read> lines> csv> evaluate , ;
+
+z" assets/dungeon.png" loadbmp constant dungeon.bmp
+dungeon.bmp 16 16 tileset dungeon.ts  
+
+\ ------------------------------------------------------------------------------
+
+variable level#
+
+\ include actors/player.vfx
+
+method (load) ( - )
+: load  ( obj -- )  [[ (load) ]] ;
+
+\ ------------------------------------------------------------------------------
+
+: ,,  0 do dup , loop drop ;
+\ : *tilemap-alloc
+\     2dup 2>r  here %tilemap sizeof +  swap  2r@ *tilemap
+\     2r> * -1 swap ,, ;
+
+0 0 at  root to joan
+
+    here -1 20 15 * ,,
+create g1  dungeon.ts 20 15 *tilemap drop 
+\ create g2  ground2.arr farm.ts 20 15 *tilemap drop
+\ create a1  active.arr farm.ts 20 15 *tilemap drop
+create gp  %scene ** drop
+\ create p1  %player ** as  a1 map !  50 50 x v!  0 0 vx v!
+
+\ ------------------------------------------------------------------------------
+
+create tile-objects  1024 cells allot&erase
+
+: clear-tile  -1 swap ! ;
+
+variable object-tile  \ allows objects to know the tile # that spawned them
+
+: @objects  ( tilemap - )
+    gp clear  gp to joan  [[
+    tm-base @  tm-rows 0 do
+        tm-cols 0 do
+            dup @ 0 >= if
+                dup @ cells tile-objects + @ ?dup if
+                    over @ object-tile !  over clear-tile  
+                    i ts @ tilew *  j ts @ tileh *  at   
+                    ( kind ) ** [[ cr .actor ]]
+                then
+            then
+            cell+
+        loop
+    loop  drop ]] ;
+
+\ ------------------------------------------------------------------------------
+
+: csv-ints  ( $ c - a )
+    cr 2dup type
+    here -rot  read> lines> csv> evaluate , ;
+
+\ ------------------------------------------------------------------------------
+
+%actor kind: %level ;kind
+
+\ ------------------------------------------------------------------------------
+
+100 array levels
+
+: prefix  pad count ;
+
+: layer,  ( a:base a:ts - )
+    20 15 *tilemap drop ;
+
+\ ( $ c ) = "suffix.ext", pad = level name
+: level-layer,  ( $ c tileset - )  
+    >r s" tiled/"  prefix $+  2swap $+  csv-ints r> layer, ;
+
+: level  ( n - <name> )
+    >r  >in @ create   
+    %level static,  me r> levels set  me to joan
+        >in ! bl parse pad place
+        s" _g1.csv" dungeon.ts level-layer,
+\        s" _g2.csv" level-layer,
+         s" _a1.csv" dungeon.ts level-layer, ;
+
+\ ------------------------------------------------------------------------------
+
+\ include tile-objects.vfx
+0 to joan
+include levels.vfx
+
+\ ------------------------------------------------------------------------------
+
+: @tiles  >r dup count-tilemap r> -> tm-base @  swap move  >next ;
+
+%level m: (load)
+    first @ g1 @tiles ( g2 @tiles a1 @tiles ) drop 
+    ( a1 @objects ) ;
+        
+: play  ( n - )
+    dup levels get dup 0= if  2drop  exit  then
+    swap  level# !  load ;

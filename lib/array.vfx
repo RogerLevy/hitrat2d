@@ -1,0 +1,12 @@
+%obj kind: %array
+    var len var buf var cap
+;kind
+
+\ to add to a "collection" interface...
+\ key/value thingies... string keys being z-term...
+: set  [[ dup len @ >= abort" set: Index out of range!" cells buf @ + ! ]] ;
+: get  [[ dup len @ >= abort" set: Index out of range!" cells buf @ + @ ]] ;
+: length  -> len @ ;
+
+: array ( n -- <name> )
+    create %array static, here buf ! dup len ! cells allot&erase ;

@@ -1,0 +1,7 @@
+\ not re-entrant
+create $ 256 allot
+
+: $[  $ place ;
+: +$  $ append ;
+: $]  $ count ;
+: $+  2swap $[ +$ $] ;
