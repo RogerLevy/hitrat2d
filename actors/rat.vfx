@@ -1,0 +1,12 @@
+%actor kind: %rat
+    var cnt
+;kind
+
+z" assets/rat1.png" loadbmp constant rat.bmp
+
+rat.bmp 32 32 tileset rat.ts
+
+%rat m: init
+    draw>
+        cnt @ 3 / 9 mod rat.ts tile
+        1 cnt +! ;

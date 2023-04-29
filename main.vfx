@@ -42,7 +42,7 @@ method (load) ( - )
 
 0 0 at  root to joan
 
-    here -1 20 15 * ,,
+here -1 20 15 * ,,
 create g1  dungeon.ts 20 15 *tilemap drop 
 \ create g2  ground2.arr farm.ts 20 15 *tilemap drop
 \ create a1  active.arr farm.ts 20 15 *tilemap drop
@@ -105,7 +105,8 @@ variable object-tile  \ allows objects to know the tile # that spawned them
 
 \ ------------------------------------------------------------------------------
 
-\ include tile-objects.vfx
+include cast.vfx
+
 0 to joan
 include levels.vfx
 
@@ -120,3 +121,7 @@ include levels.vfx
 : play  ( n - )
     dup levels get dup 0= if  2drop  exit  then
     swap  level# !  load ;
+
+: in  to joan ;
+    
+create rat 50 50 at root in %rat ** as
