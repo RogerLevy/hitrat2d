@@ -40,7 +40,7 @@ method (load) ( - )
 \     2dup 2>r  here %tilemap sizeof +  swap  2r@ *tilemap
 \     2r> * -1 swap ,, ;
 
-0 0 at  root to joan
+0 0 at  root in
 
 here -1 20 15 * ,,
 create g1  dungeon.ts 20 15 *tilemap drop 
@@ -58,7 +58,7 @@ create tile-objects  1024 cells allot&erase
 variable object-tile  \ allows objects to know the tile # that spawned them
 
 : @objects  ( tilemap - )
-    gp clear  gp to joan  [[
+    gp clear  gp in  [[
     tm-base @  tm-rows 0 do
         tm-cols 0 do
             dup @ 0 >= if
@@ -97,7 +97,7 @@ variable object-tile  \ allows objects to know the tile # that spawned them
 
 : level  ( n - <name> )
     >r  >in @ create   
-    %level static,  me r> levels set  me to joan
+    %level static,  me r> levels set  me in
         >in ! bl parse pad place
         s" _g1.csv" dungeon.ts level-layer,
 \        s" _g2.csv" level-layer,
@@ -107,7 +107,7 @@ variable object-tile  \ allows objects to know the tile # that spawned them
 
 include cast.vfx
 
-0 to joan
+0 in
 include levels.vfx
 
 \ ------------------------------------------------------------------------------
@@ -121,7 +121,5 @@ include levels.vfx
 : play  ( n - )
     dup levels get dup 0= if  2drop  exit  then
     swap  level# !  load ;
-
-: in  to joan ;
     
 create rat 50 50 at root in %rat ** as

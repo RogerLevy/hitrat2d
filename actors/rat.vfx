@@ -6,7 +6,16 @@ z" assets/rat1.png" loadbmp constant rat.bmp
 
 rat.bmp 32 32 tileset rat.ts
 
+
+: deg>rad  0.01745329e f* ;
+
+0e fvalue ftemp
+
+: rblit ( flags bmp r: angle - )
+    to ftemp  dup bmpwh swap 2 / s>f 2 / s>f  at@f
+    ftemp deg>rad  swap al_draw_rotated_bitmap ;
+
 %rat m: init
     draw>
-        cnt @ 3 / 9 mod rat.ts tile
+        cnt @ 3 / 9 mod rat.ts tile@ cnt @ s>f rblit
         1 cnt +! ;
