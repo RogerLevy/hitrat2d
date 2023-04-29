@@ -1,5 +1,5 @@
 %actor kind: %rat
-    var cnt
+    var cnt var ang
 ;kind
 
 z" assets/rat1.png" loadbmp constant rat.bmp
@@ -15,7 +15,14 @@ rat.bmp 32 32 tileset rat.ts
     to ftemp  dup bmpwh swap 2 / s>f 2 / s>f  at@f
     ftemp deg>rad  swap al_draw_rotated_bitmap ;
 
+: idle  step>  noop ;
+: bop  1e vx fs! -3e vy fs! step>  0.1e vy fs+!  17 ang +! ;
+
+
 %rat m: init
+    idle
+    physics>
+        vx fv@ x fv+! 
     draw>
-        cnt @ 3 / 9 mod rat.ts tile@ cnt @ s>f rblit
+        cnt @ 3 / 9 mod rat.ts tile@ ang @ s>f rblit
         1 cnt +! ;
