@@ -1,0 +1,8 @@
+require vfxland3/lib/counter.vfx
+
+%actor kind: %timer  var et var xt  ;kind
+
+: fsec>ms  1000e f* f>s ;
+: (timer)  draw>  counter et @ >= if  xt @ execute  me kill  then ;  DoNotSin
+: timer>  %timer ** [[ r> xt !  fsec>ms counter + et !  (timer) ]] ;
+    DoNotSin
