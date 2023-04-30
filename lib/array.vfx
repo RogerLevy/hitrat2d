@@ -4,9 +4,14 @@
 
 \ to add to a "collection" interface...
 \ key/value thingies... string keys being z-term...
-: set  [[ dup len @ >= abort" set: Index out of range!" cells buf @ + ! ]] ;
-: get  [[ dup len @ >= abort" set: Index out of range!" cells buf @ + @ ]] ;
+: set  [[ dup cap @ >= abort" set: Index out of range!" cells buf @ + ! ]] ;
+: get  [[ dup cap @ >= abort" set: Index out of range!" cells buf @ + @ ]] ;
 : length  -> len @ ;
 
 : array ( n -- <name> )
-    create %array static, here buf ! dup len ! cells allot&erase ;
+    create %array static, here buf ! dup len ! dup cap ! cells allot&erase ;
+
+: stack ( n -- <name> )
+    create %array static, here buf ! dup cap ! cells allot&erase ;
+
+%array m: (push)  len @ me set  1 len +! ;
