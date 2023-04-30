@@ -50,5 +50,5 @@ include levels.vfx
     
 create rat 64 64 at root in %rat ** as
 
-: reset  0 play  rat [[ 64 64 x v! init ]] ;
+: reset  0 play  rat [[ 208 8 + 32 8 + x v! init ]] ;
 reset

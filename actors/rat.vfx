@@ -1,7 +1,7 @@
 require lib/ranges.vfx
 
 %actor kind: %rat
-    var cnt var ang var spd
+    var ctr var ang var spd
 ;kind
 
 z" assets/rat1.png" loadbmp constant rat.bmp
@@ -22,7 +22,7 @@ rat.bmp 32 32 tileset rat.ts
 
 : bbox  x v@ -16 -16 2+ 2dup w v@ 2+ ;
 : mheld?  ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
-: bop  1e vx fs! -2e vy fs! step>  0.05e vy fs+!  33 ang +! ;
+: bop  1 -2 vx v! step>  0.05e vy fs+!  33 ang +! ;
 : ?click  1 mheld? if  mouse zoom/ bbox inside? if  bop  then  then ;
 : stop  0 0 vx v! step>  ?click ;
 
@@ -31,20 +31,21 @@ rat.bmp 32 32 tileset rat.ts
 : fvec  ( f: deg len -- f: x y )  to flen  fuvec  flen f* fswap flen f* fswap ;
 : propel  dup ang !  s>f spd fs@ fvec vx fv! ;
 : redirect  4 choose 90 * propel ;
-: skitter  90 propel  step>  cnt @ 30 = if redirect  0 cnt ! then  ?click ;
-
-: turn  ang @ 90 + propel  vx fv@ x fv+! ;
+: turn  ang @ 90 + 360 mod propel  vx fv@ x fv+! ;
+: ?turn
+    x s@ 16 < if  16 x s!  turn  then
+    y s@ 16 < if  16 y s!  turn  then
+    x s@ winw 2 / 16 - > if  winw 2 / 16 - x s!  turn  then
+    y s@ winh 2 / 16 - > if  winh 2 / 16 - y s!  turn  then ;
+: skitter  90 propel  0 ctr !  step>  ctr @ 30 >= if redirect  0 ctr ! then
+    ?click  ?turn ;
 
 %rat m: init
-    skitter
     32 32 w v!
     2 spd s!
+    skitter
     physics>
-        vx fv@ x fv+!
-        x s@ 16 < if  16 x s!  turn  then
-        y s@ 16 < if  16 y s!  turn  then
-        x s@ winw 16 - > if  winw 16 - x s!  turn  then
-        x s@ winh 16 - > if  winh 16 - y s!  turn  then
+        vx fv@ x fv+!  
     draw>
-        cnt @ 3 / 9 mod rat.ts tile@ ang @ 90 - s>f rblit
-        1 cnt +! ;
+        ctr @ 3 / 9 mod rat.ts tile@ ang @ 90 - s>f rblit
+        1 ctr +! ;
