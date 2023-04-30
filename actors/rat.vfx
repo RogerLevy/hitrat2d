@@ -1,3 +1,5 @@
+require lib/ranges.vfx
+
 %actor kind: %rat
     var cnt var ang
 ;kind
@@ -5,7 +7,6 @@
 z" assets/rat1.png" loadbmp constant rat.bmp
 
 rat.bmp 32 32 tileset rat.ts
-
 
 : deg>rad  0.01745329e f* ;
 
@@ -15,12 +16,20 @@ rat.bmp 32 32 tileset rat.ts
     to ftemp  dup bmpwh swap 2 / s>f 2 / s>f  at@f
     ftemp deg>rad  swap al_draw_rotated_bitmap ;
 
-: idle  step>  noop ;
+: 2+  rot + >r + r> ;
+
+: zoom/  2 / >r 2 / r> ;
+
+: bbox  x v@ -16 -16 2+ 2dup w v@ 2+ ;
+: mheld?  ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
 : bop  1e vx fs! -2e vy fs! step>  0.05e vy fs+!  33 ang +! ;
+: ?click  1 mheld? if  mouse zoom/ bbox inside? if  bop  then  then ;
+: idle  0 0 vx v! step>  ?click ;
 
 
 %rat m: init
     idle
+    32 32 w v!
     physics>
         vx fv@ x fv+! 
     draw>

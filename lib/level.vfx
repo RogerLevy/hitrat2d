@@ -16,7 +16,7 @@ create tile-objects  1024 cells allot&erase
 variable object-tile  \ allows objects to know the tile # that spawned them
 
 : @objects  ( tilemap - )
-    gp clear  gp in  [[
+    actors clear  actors in  [[
     tm-base @  tm-rows 0 do
         tm-cols 0 do
             dup @ 0 >= if
