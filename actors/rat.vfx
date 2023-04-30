@@ -1,7 +1,7 @@
 require lib/ranges.vfx
 
 %actor kind: %rat
-    var cnt var ang
+    var cnt var ang var spd
 ;kind
 
 z" assets/rat1.png" loadbmp constant rat.bmp
@@ -24,14 +24,27 @@ rat.bmp 32 32 tileset rat.ts
 : mheld?  ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
 : bop  1e vx fs! -2e vy fs! step>  0.05e vy fs+!  33 ang +! ;
 : ?click  1 mheld? if  mouse zoom/ bbox inside? if  bop  then  then ;
-: idle  0 0 vx v! step>  ?click ;
+: stop  0 0 vx v! step>  ?click ;
 
+0 fvalue flen
+: fuvec ( f: deg -- f: x y )  deg>rad fdup fcos fswap fsin ;
+: fvec  ( f: deg len -- f: x y )  to flen  fuvec  flen f* fswap flen f* fswap ;
+: propel  dup ang !  s>f spd fs@ fvec vx fv! ;
+: redirect  4 choose 90 * propel ;
+: skitter  90 propel  step>  cnt @ 30 = if redirect  0 cnt ! then  ?click ;
+
+: turn  ang @ 90 + propel  vx fv@ x fv+! ;
 
 %rat m: init
-    idle
+    skitter
     32 32 w v!
+    2 spd s!
     physics>
-        vx fv@ x fv+! 
+        vx fv@ x fv+!
+        x s@ 16 < if  16 x s!  turn  then
+        y s@ 16 < if  16 y s!  turn  then
+        x s@ winw 16 - > if  winw 16 - x s!  turn  then
+        x s@ winh 16 - > if  winh 16 - y s!  turn  then
     draw>
-        cnt @ 3 / 9 mod rat.ts tile@ ang @ s>f rblit
+        cnt @ 3 / 9 mod rat.ts tile@ ang @ 90 - s>f rblit
         1 cnt +! ;
