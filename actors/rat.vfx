@@ -16,7 +16,7 @@ rat.bmp 32 32 tileset rat.ts
     ftemp deg>rad  swap al_draw_rotated_bitmap ;
 
 : idle  step>  noop ;
-: bop  1e vx fs! -3e vy fs! step>  0.1e vy fs+!  17 ang +! ;
+: bop  1e vx fs! -2e vy fs! step>  0.05e vy fs+!  33 ang +! ;
 
 
 %rat m: init
