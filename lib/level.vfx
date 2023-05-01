@@ -1,6 +1,7 @@
 \ ------------------------------------------------------------------------------
 
 variable level#
+20 stack holes  \ x , y , x , y ....
 
 \ include actors/player.vfx
 
@@ -64,9 +65,16 @@ variable object-tile  \ allows objects to know the tile # that spawned them
 
 : @tiles  >r dup count-tilemap r> -> tm-base @  swap move  >next ;
 
+: @holes
+    holes clear
+    g1 count-tilemap 4 / 0 do  @+ dup 110 = swap 150 = or if
+        i 20 mod holes push   i 15 / holes push
+    then loop drop ;
+
 %level m: (load)
     first @ g1 @tiles ( g2 @tiles a1 @tiles ) drop 
-    ( a1 @objects ) ;
+    ( a1 @objects )
+    @holes ;
         
 : play  ( n - )
     dup levels get dup 0= if  2drop  exit  then

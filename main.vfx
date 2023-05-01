@@ -35,7 +35,7 @@ dungeon.bmp 16 16 tileset dungeon.ts
 
 0 0 at  root in
 
-here -1 20 15 * ,,
+align  here  -1 20 15 * ,,
 create g1  dungeon.ts 20 15 *tilemap drop 
 \ create g2  ground2.arr farm.ts 20 15 *tilemap drop
 \ create a1  active.arr farm.ts 20 15 *tilemap drop
@@ -57,7 +57,10 @@ include levels.vfx
 actors in 
 create rat 64 64 at %rat ** as
 
-: reset  0 play  rat [[ 208 8 + 32 8 + x v! init ]] ;
+
+: ?hole  holes length 2 / choose 2 * dup holes get swap 1 + holes get
+    16 * 8 + swap 16 * 8 + swap ;
+: reset  0 play  rat [[ ?hole x v! init ]] ;
 
 :noname  30 choose 10 / 1 + s>f timer> reset ; is rat-hit
 
