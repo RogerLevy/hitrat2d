@@ -1,5 +1,7 @@
 require lib/ranges.vfx
 
+include actors/rat-sfx.vfx
+
 %actor kind: %rat
     var ctr var ang var spd var ctr2
 ;kind
@@ -21,10 +23,15 @@ rat.bmp 32 32 tileset rat.ts
 
 : zoom/  2 / >r 2 / r> ;
 
+0 value sfx
+: play-doubled  dup to sfx just-play-sample
+    0.04e timer>  sfx just-play-sample ;
+
 : bbox  x v@ -16 -16 2+ 2dup w v@ 2+ ;
 : mheld?  ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
 : bop  1 -2 vx v! step>  0.05e vy fs+!  33 ang +! ;
-: ?click  1 mheld? if  mouse zoom/ bbox inside? if  bop  rat-hit  then  then ;
+: hit  bop  rat-hit  32 choose rathits get play-doubled ;
+: ?click  1 mheld? if  mouse zoom/ bbox inside? if  hit  then  then ;
 : stop  0 0 vx v! step>  ?click ;
 
 0 fvalue flen
@@ -38,12 +45,12 @@ rat.bmp 32 32 tileset rat.ts
     y s@ 16 < if  16 y s!  turn  then
     x s@ winw 2 / 16 - > if  winw 2 / 16 - x s!  turn  then
     y s@ winh 2 / 16 - > if  winh 2 / 16 - y s!  turn  then ;
-: skitter  90 propel  0 ctr !  step>  ctr @ 30 >= if redirect  0 ctr ! then
-    ?click  ?turn ;
+: skitter  *squeak*  90 propel  0 ctr !  step>  ctr @ 60 >= if redirect
+    0 ctr ! then  ?click  ?turn ;
 
 %rat m: init
     32 32 w v!
-    1.5e spd fs!
+    1e spd fs!
     skitter
     70 ctr2 !
     physics>

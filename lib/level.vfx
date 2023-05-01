@@ -33,7 +33,6 @@ variable object-tile  \ allows objects to know the tile # that spawned them
 \ ------------------------------------------------------------------------------
 
 : csv-ints  ( $ c - a )
-    cr 2dup type
     here -rot  read> lines> csv> evaluate , ;
 
 \ ------------------------------------------------------------------------------

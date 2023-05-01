@@ -17,6 +17,8 @@ require lib/array.vfx
 
 -sin  \ disable tokenization of all definitions from here
 
+require lib/timer.vfx
+
 \ ------------------------------------------------------------------------------
 
 : read-csv,  read> lines> csv> evaluate , ;
@@ -51,20 +53,11 @@ include cast.vfx
 
 0 in
 include levels.vfx
-    
+
 actors in 
 create rat 64 64 at %rat ** as
 
 : reset  0 play  rat [[ 208 8 + 32 8 + x v! init ]] ;
 reset
-
-
-require vfxland3/lib/counter.vfx
-
-%actor kind: %timer  var et var xt  ;kind
-
-: fsec>ms  1000e f* f>s ;
-: (timer)  draw>  counter et @ >= if  xt @ execute  me kill  then ;
-: timer>  %actor ** [[ r> xt !  fsec>ms counter + et !  (timer) ]] ;
 
 :noname  1e timer> reset ; is rat-hit

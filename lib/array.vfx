@@ -11,7 +11,15 @@
 : array ( n -- <name> )
     create %array static, here buf ! dup len ! dup cap ! cells allot&erase ;
 
-: stack ( n -- <name> )
-    create %array static, here buf ! dup cap ! cells allot&erase ;
+%array m: (clear)  buf @ len @ cells erase ;
 
-%array m: (push)  len @ me set  1 len +! ;
+\ ------------------------------------------------------------------------------
+
+%array kind: %stack
+;kind
+
+: stack ( n -- <name> )
+    create %stack static, here buf ! dup cap ! cells allot&erase ;
+
+%stack m: (push)  len @ me set  1 len +! ;
+%stack m: (clear)  0 len ! ;
