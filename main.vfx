@@ -58,6 +58,8 @@ actors in
 create rat 64 64 at %rat ** as
 
 : reset  0 play  rat [[ 208 8 + 32 8 + x v! init ]] ;
-reset
 
-:noname  1e timer> reset ; is rat-hit
+:noname  30 choose 10 / 1 + s>f timer> reset ; is rat-hit
+
+reset
+go

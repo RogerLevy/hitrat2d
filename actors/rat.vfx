@@ -50,7 +50,7 @@ rat.bmp 32 32 tileset rat.ts
 
 %rat m: init
     32 32 w v!
-    1e spd fs!
+    20 choose 10 / s>f 1e f+ spd fs!
     skitter
     70 ctr2 !
     physics>
