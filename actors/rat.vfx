@@ -1,5 +1,3 @@
-require lib/ranges.vfx
-
 include actors/rat-sfx.vfx
 
 %actor kind: %rat
@@ -11,32 +9,12 @@ z" assets/hitrat.png" loadbmp constant hitrat.bmp
 
 rat.bmp 32 32 tileset rat.ts
 
-: deg>rad  0.01745329e f* ;
-
-0e fvalue ftemp
-
-: rblit ( flags bmp r: angle - )
-    to ftemp  dup bmpwh swap 2 / s>f 2 / s>f  at@f
-    ftemp deg>rad  swap al_draw_rotated_bitmap ;
-
-: 2+  rot + >r + r> ;
-
-: zoom/  2 / >r 2 / r> ;
-
-0 value sfx
-: play-doubled  dup to sfx just-play-sample
-    0.04e timer>  sfx just-play-sample ;
-
-: bbox  x v@ -16 -16 2+ 2dup w v@ 2+ ;
-: mheld?  ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
+%rat m: bbox  x v@ -16 -16 2+ 2dup w v@ 2+ ;
 : bop  1 -2 vx v! step>  0.05e vy fs+!  33 ang +! ;
 : hit  bop  rat-hit  32 choose rathits get play-doubled ;
-: ?click  1 mheld? if  mouse zoom/ bbox inside? if  hit  then  then ;
-: stop  0 0 vx v! step>  ?click ;
+: ?hit  clicked? if  hit  then ;
+: stop  0 0 vx v! step>  ?hit ;
 
-0 fvalue flen
-: fuvec ( f: deg -- f: x y )  deg>rad fdup fcos fswap fsin ;
-: fvec  ( f: deg len -- f: x y )  to flen  fuvec  flen f* fswap flen f* fswap ;
 : propel  dup ang !  s>f spd fs@ fvec vx fv! ;
 : redirect  4 choose 90 * propel ;
 : turn  ang @ 90 + 360 mod propel  0 ctr ! ;
@@ -46,7 +24,7 @@ rat.bmp 32 32 tileset rat.ts
     x s@ winw 2 / 16 - > if  winw 2 / 16 - x s!  turn  then
     y s@ winh 2 / 16 - > if  winh 2 / 16 - y s!  turn  then ;
 : skitter  *squeak*  90 propel  0 ctr !  step>  ctr @ 60 >= if redirect
-    0 ctr ! then  ?click  ?turn ;
+    0 ctr ! then  ?hit  ?turn ;
 
 %rat m: init
     32 32 w v!

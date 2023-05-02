@@ -1,0 +1,38 @@
+\ ------------------------------------------------------------------------------
+
+: ,,  0 do dup , loop drop ;
+
+\ ------------------------------------------------------------------------------
+\ from rat.vfx:
+
+0 fvalue flen
+: fuvec ( f: deg -- f: x y )  deg>rad fdup fcos fswap fsin ;
+: fvec  ( f: deg len -- f: x y )  to flen  fuvec  flen f* fswap flen f* fswap ;
+
+: mheld?  ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
+: mdelta  dup mheld? 1 and  swap ms1 ALLEGRO_MOUSE_STATE.buttons @ and 0<>
+    1 and - ;
+: mpressed?  mdelta 1 = ;
+: mletgo?  mdelta -1 = ;
+
+: deg>rad  0.01745329e f* ;
+
+0e fvalue ftemp
+
+: rblit ( flags bmp f: angle - )
+    to ftemp  dup bmpwh swap 2 / s>f 2 / s>f  at@f
+    ftemp deg>rad  swap al_draw_rotated_bitmap ;
+
+: 2+  rot + >r + r> ;
+
+: zoom/  2 / >r 2 / r> ;
+
+0 value sfx
+: play-doubled  dup to sfx just-play-sample
+    0.04e timer>  sfx just-play-sample ;
+    
+method bbox ( - x y w h )
+
+%actor m: bbox  x v@ w v@ 2over 2+ ;
+
+: clicked?  1 mpressed?  mouse zoom/ bbox inside? and ;  

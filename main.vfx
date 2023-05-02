@@ -14,21 +14,19 @@ cwd %idir%
 
 include lib/str.vfx
 require lib/array.vfx
+require lib/timer.vfx
+require lib/ranges.vfx
+include lib/extra.vfx
 
 -sin  \ disable tokenization of all definitions from here
 
-require lib/timer.vfx
-
 \ ------------------------------------------------------------------------------
-
-: read-csv,  read> lines> csv> evaluate , ;
 
 z" assets/dungeon.png" loadbmp constant dungeon.bmp
 dungeon.bmp 16 16 tileset dungeon.ts  
 
 \ ------------------------------------------------------------------------------
 
-: ,,  0 do dup , loop drop ;
 \ : *tilemap-alloc
 \     2dup 2>r  here %tilemap sizeof +  swap  2r@ *tilemap
 \     2r> * -1 swap ,, ;
