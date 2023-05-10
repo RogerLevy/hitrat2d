@@ -1,0 +1,6 @@
+git
+komodoproject
+build.bat
+README
+excludes.txt
+bin

@@ -10,7 +10,7 @@ require plugins/engine1.vfx
 require plugins/bitmaps2.vfx
 require plugins/tilemap4.vfx
 require lib/files1.vfx
-cwd %idir%
+cwd ..
 
 include lib/str.vfx
 require lib/array.vfx
@@ -62,5 +62,6 @@ create rat 64 64 at %rat ** as
 
 :noname  30 choose 10 / 1 + s>f timer> reset ; is rat-hit
 
+cr dev? . fullscreen? . mswin? . cr
 reset
 go
