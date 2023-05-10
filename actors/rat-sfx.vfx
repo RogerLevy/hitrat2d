@@ -1,6 +1,7 @@
 : sound  create here 0 , swap ?load-sample  does> just-play-sample ;
 
 z" assets/sfx/squeak.ogg" sound *squeak*
+z" assets/sfx/bop.wav" sound *bop*
 
 33 stack rathits
 
