@@ -7,7 +7,7 @@ include actors/rat-sfx.vfx
 z" assets/rat1.png" loadbmp constant rat.bmp
 z" assets/hitrat.png" loadbmp constant hitrat.bmp
 
-rat.bmp 32 32 tileset rat.ts
+rat.bmp 32 32 create-tileset rat.ts
 
 %rat m: bbox  x v@ -16 -16 2+ 2dup w v@ 2+ ;
 : bop  *bop*  1 -2 vx v! step>  0.05e vy fs+!  33 ang +! ;

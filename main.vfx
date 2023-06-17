@@ -23,7 +23,7 @@ include lib/extra.vfx
 \ ------------------------------------------------------------------------------
 
 z" assets/dungeon.png" loadbmp constant dungeon.bmp
-dungeon.bmp 16 16 tileset dungeon.ts  
+dungeon.bmp 16 16 create-tileset dungeon.ts  
 
 \ ------------------------------------------------------------------------------
 
