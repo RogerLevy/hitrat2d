@@ -4,5 +4,5 @@ require vfxland3/lib/counter.vfx
 
 : fsec>ms  1000e f* f>s ;
 : (timer)  draw>  counter et @ >= if  xt @ execute  me kill  then ;  DoNotSin
-: timer>  %timer ** [[ r> xt !  fsec>ms counter + et !  (timer) ]] ;
+: timer>  %timer one [[ r> xt !  fsec>ms counter + et !  (timer) ]] ;
     DoNotSin

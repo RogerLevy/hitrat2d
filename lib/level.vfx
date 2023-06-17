@@ -1,10 +1,5 @@
 \ ------------------------------------------------------------------------------
 
-variable level#
-20 stack holes  \ x , y , x , y ....
-
-\ include actors/player.vfx
-
 method (load) ( - )
 : load  ( obj -- )  [[ (load) ]] ;
 
@@ -24,7 +19,7 @@ variable object-tile  \ allows objects to know the tile # that spawned them
                 dup @ cells tile-objects + @ ?dup if
                     over @ object-tile !  over clear-tile  
                     i ts @ tilew *  j ts @ tileh *  at   
-                    ( kind ) ** [[ cr .actor ]]
+                    ( kind ) one [[ cr .actor ]]
                 then
             then
             cell+
@@ -33,8 +28,8 @@ variable object-tile  \ allows objects to know the tile # that spawned them
 
 \ ------------------------------------------------------------------------------
 
-: csv-ints  ( $ c - a )
-    here -rot  read> lines> csv> evaluate , ;
+: csv-ints,  ( $ c - )
+    read> lines> csv> evaluate , ;
 
 \ ------------------------------------------------------------------------------
 
@@ -44,38 +39,36 @@ variable object-tile  \ allows objects to know the tile # that spawned them
 
 100 array levels
 
-: prefix  pad count ;
-
-: layer,  ( a:base a:ts - )
-    20 15 *tilemap drop ;
-
 \ ( $ c ) = "suffix.ext", pad = level name
-: level-layer,  ( $ c tileset - )  
-    >r s" tiled/"  prefix $+  2swap $+  csv-ints r> layer, ;
+: csv-layer,  ( $ c  tileset - )  
+    >r  s" tiled/" pad count $+  2swap $+
+    r>  static 20 15 *tilemap drop  csv-ints,  ;
 
-: level  ( n - <name> )
-    >r  >in @ create   
-    %level static,  me r> levels set  me in
-        >in ! bl parse pad place
-        s" _g1.csv" dungeon.ts level-layer,
-\        s" _g2.csv" level-layer,
-         s" _a1.csv" dungeon.ts level-layer, ;
+: define-level  ( n - <name> )
+    >r  >in @ 
+    %level create-static  me r> levels set  me in
+        >in ! bl parse pad place ;
 
 \ ------------------------------------------------------------------------------
 
-: @tiles  >r dup count-tilemap r> -> tm-base @  swap move  >next ;
+variable level#
+100 stack holes  \ x , y , x , y ....
 
-: @holes
+: copy-tilemap  ( src-tilemap dest-tilemap - )
+    swap count-tilemap  rot count-tilemap drop  swap move ;
+
+: load-holes  ( - )
     holes clear
-    g1 count-tilemap 4 / 0 do  @+ dup 110 = swap 150 = or if
-        i 20 mod holes push   i 15 / holes push
-    then loop drop ;
+    g1 count-tilemap 4 / 0 do
+        @+ dup 110 = swap 150 = or if
+            i 20 mod holes push   i 15 / holes push
+        then
+    loop drop ;
 
 %level m: (load)
-    first @ g1 @tiles ( g2 @tiles a1 @tiles ) drop 
-    ( a1 @objects )
-    @holes ;
+    first @ g1 copy-tilemap
+    load-holes ;
         
-: play  ( n - )
+: level  ( n - )
     dup levels get dup 0= if  2drop  exit  then
     swap  level# !  load ;

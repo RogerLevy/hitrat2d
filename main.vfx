@@ -27,24 +27,17 @@ dungeon.bmp 16 16 tileset dungeon.ts
 
 \ ------------------------------------------------------------------------------
 
-\ : *tilemap-alloc
-\     2dup 2>r  here %tilemap sizeof +  swap  2r@ *tilemap
-\     2r> * -1 swap ,, ;
-
 0 0 at  root in
 
-align  here  -1 20 15 * ,,
-create g1  dungeon.ts 20 15 *tilemap drop 
-\ create g2  ground2.arr farm.ts 20 15 *tilemap drop
-\ create a1  active.arr farm.ts 20 15 *tilemap drop
-create actors  %scene ** drop
-\ create p1  %player ** as  a1 map !  50 50 x v!  0 0 vx v!
+: create-tilemap-buffer  ( ts w h - <name> )  ( - tilemap )
+    2dup 2>r  create static *tilemap as  -1 2r> * ,, ;
+
+dungeon.ts 20 15 create-tilemap-buffer g1
+create actors  %scene one drop
 
 \ ------------------------------------------------------------------------------
 
 defer rat-hit
-
-\ ------------------------------------------------------------------------------
 
 include lib/level.vfx
 include cast.vfx
@@ -52,16 +45,20 @@ include cast.vfx
 0 in
 include levels.vfx
 
-actors in 
-create rat 64 64 at %rat ** as
+\ ------------------------------------------------------------------------------
 
+actors in
+64 64 at  %rat create-static rat
 
-: ?hole  holes length 2 / choose 2 * dup holes get swap 1 + holes get
-    16 * 8 + swap 16 * 8 + swap ;
-: reset  0 play  rat [[ ?hole x v! init ]] ;
+: 2get  over 1 + over get >r get r> ;
+
+: ?holexy  holes length 2 / choose 2 *  holes 2get 16 16 2*  8 8 2+  ;
+
+: emerge  [[ ?holexy x v! init ]] ;
+
+: reset  0 level  rat emerge ;
 
 :noname  30 choose 10 / 1 + s>f timer> reset ; is rat-hit
 
-cr dev? . fullscreen? . mswin? . cr
-reset
-go
+\ reset
+\ go

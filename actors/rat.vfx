@@ -32,7 +32,7 @@ rat.bmp 32 32 tileset rat.ts
     skitter
     70 ctr2 !
     physics>
-        vx fv@ x fv+!  
+        move-simple
     draw>
         ctr @ 3 / 9 mod rat.ts tile@ ang @ 90 - s>f rblit
         1 ctr +!

@@ -24,8 +24,11 @@
     ftemp deg>rad  swap al_draw_rotated_bitmap ;
 
 : 2+  rot + >r + r> ;
+: 2*  rot * >r * r> ;
+: 2/  rot swap / >r / r> ;
+: 2mod  rot swap mod >r mod r> ;
 
-: zoom/  2 / >r 2 / r> ;
+: zoom/  2 2 2/ ;
 
 0 value sfx
 : play-doubled  dup to sfx just-play-sample
@@ -36,3 +39,5 @@ method bbox ( - x y w h )
 %actor m: bbox  x v@ w v@ 2over 2+ ;
 
 : clicked?  1 mpressed?  mouse zoom/ bbox inside? and ;  
+
+: move-simple  vx fv@ 2delta* x fv+! ;
